@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  category    Category
+  image       String
+  pricePerDay Float
+  sizeType    SizeType
+
+  variants ProductVariant[]
+}
+
+model ProductVariant {
+  id String @id @default(uuid())
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  size String
+
+  stockItems StockItem[]
+}
+
+model StockItem {
+  id String @id @default(uuid())
+
+  variantId String
+  variant   ProductVariant @relation(fields: [variantId], references: [id])
+
+  reservations ReservationItem[]
+}
+
+model User {
+  id       String @id @default(uuid())
+  email    String @unique
+  password String
+  role     Role
+
+  orders Order[]
+}
+
+model Order {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  startDate DateTime
+  endDate   DateTime
+
+  totalPrice Float
+
+  status OrderStatus
+
+  items ReservationItem[]
+}
+
+model ReservationItem {
+  id String @id @default(uuid())
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id])
+
+  stockItemId String
+  stockItem   StockItem @relation(fields: [stockItemId], references: [id])
+}
+
+enum Category {
+  SKI
+  SNOWBOARD
+  SHOES
+  POLES
+  HELMET
+}
+
+enum SizeType {
+  CM
+  EU
+  LETTER
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
