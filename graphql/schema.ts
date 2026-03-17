@@ -27,4 +27,21 @@ export const typeDefs = `#graphql
     products: [Product!]!
   }
 
+  type AvailableVariant {
+  variantId: ID!
+  size: String!
+  availableStock: Int!
+}
+
+type AvailableProduct {
+  productId: ID!
+  name: String!
+  pricePerDay: Float!
+  variants: [AvailableVariant!]!
+}
+
+extend type Query {
+  availableProducts(startDate: String!, endDate: String!): [AvailableProduct!]!
+}
+
 `;
