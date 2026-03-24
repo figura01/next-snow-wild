@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Navigation from "./Navigation";
+import Navigation from "@/components/client/header/Navigation";
 import { Button } from "@/components/ui/button";
 import Logo from "@/public/logo-snow-wild.svg";
 import Image from "next/image";
