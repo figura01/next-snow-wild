@@ -1,10 +1,25 @@
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+
 import "./globals.css";
-import { Providers } from "./providers";
-import { Inter, Geist } from "next/font/google";
-import { cn } from "@/lib/utils";
+import Header from "@/components/client/header/Header";
+import Footer from "@/components/client/Footer";
+import { ThemeProvider } from "@/components/theme-provider";
+import { ApolloWrapper } from "@/components/apollo-provider-wrapper";
+const geistSans = Geist({
+  variable: "--font-sans",
+  subsets: ["latin"],
+});
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geistMono = Geist_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+});
 
+export const metadata: Metadata = {
+  title: "SkiRent",
+  description: "Location de matériel de ski",
+};
 
 export default function RootLayout({
   children,
@@ -12,9 +27,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fr" className={cn("font-sans", geist.variable)}>
-      <body>
-        <Providers>{children}</Providers>
+    <html lang="fr" suppressHydrationWarning>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ApolloWrapper>
+            <Header />
+            {children}
+            <Footer />
+          </ApolloWrapper>
+        </ThemeProvider>
       </body>
     </html>
   );

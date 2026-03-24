@@ -24,24 +24,27 @@ export const typeDefs = `#graphql
   }
 
   type Query {
-    products: [Product!]!
+    products(
+      search: String
+      categories: [Category!]
+      sizes: [String!]
+    ): [Product!]!
   }
 
   type AvailableVariant {
-  variantId: ID!
-  size: String!
-  availableStock: Int!
-}
+    variantId: ID!
+    size: String!
+    availableStock: Int!
+  }
 
-type AvailableProduct {
-  productId: ID!
-  name: String!
-  pricePerDay: Float!
-  variants: [AvailableVariant!]!
-}
+  type AvailableProduct {
+    productId: ID!
+    name: String!
+    pricePerDay: Float!
+    variants: [AvailableVariant!]!
+  }
 
-extend type Query {
-  availableProducts(startDate: String!, endDate: String!): [AvailableProduct!]!
-}
-
+  extend type Query {
+    availableProducts(startDate: String!, endDate: String!): [AvailableProduct!]!
+  }
 `;

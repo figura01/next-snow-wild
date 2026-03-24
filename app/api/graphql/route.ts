@@ -1,13 +1,37 @@
 import { ApolloServer } from "@apollo/server";
-import { startServerAndCreateNextHandler } from "@as-integrations/next";
-
 import { typeDefs } from "@/graphql/schema";
 import { resolvers } from "@/graphql/resolvers";
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-});
+declare global {
+  // eslint-disable-next-line no-var
+  var apolloServer: ApolloServer | undefined;
+}
 
-export const GET = startServerAndCreateNextHandler(server);
-export const POST = startServerAndCreateNextHandler(server);
+async function getServer() {
+  if (!global.apolloServer) {
+    global.apolloServer = new ApolloServer({ typeDefs, resolvers });
+    await global.apolloServer.start();
+  }
+  return global.apolloServer;
+}
+
+export async function POST(request: Request) {
+  const server = await getServer();
+  const body = await request.json();
+
+  const result = await server.executeOperation({
+    query: body.query,
+    variables: body.variables,
+    operationName: body.operationName,
+  });
+
+  if (result.body.kind === "single") {
+    return Response.json(result.body.singleResult);
+  }
+
+  return Response.json({ errors: [{ message: "Unexpected response kind" }] });
+}
+
+export async function GET() {
+  return Response.json({ message: "GraphQL endpoint — use POST" });
+}

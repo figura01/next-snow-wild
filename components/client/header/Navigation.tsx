@@ -1,9 +1,32 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 const Navigation = () => {
+  const pathname = usePathname();
   return (
     <nav className="flex gap-6 text-sm">
-      <a className="hover:text-[color:var(--color-primary)]">Catalogue</a>
+      <Link
+        href="/catalogue"
+        className={
+          pathname === "/catalogue"
+            ? "text-primary-foreground font-medium"
+            : "text-primary-foreground/70 hover:text-primary-foreground transition-colors"
+        }
+      >
+        Catalogue
+      </Link>
 
-      <a className="hover:text-[color:var(--color-primary)]">Réservations</a>
+      <Link
+        href="/reservations"
+        className={
+          pathname === "/reservations"
+            ? "text-primary-foreground font-medium"
+            : "text-primary-foreground/70 hover:text-primary-foreground transition-colors"
+        }
+      >
+        Réservations
+      </Link>
     </nav>
   );
 };

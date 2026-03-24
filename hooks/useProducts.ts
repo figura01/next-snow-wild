@@ -1,14 +1,21 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchGraphQL } from "@/graphql/client";
+import { useQuery } from "@apollo/client/react";
 import { PRODUCTS_QUERY } from "@/graphql/queries/products";
+import { useCatalogStore } from "@/store/CatalogStore";
 
 export function useProducts() {
-  return useQuery({
-    queryKey: ["products"],
+  const { search, categories, sizes } = useCatalogStore();
 
-    queryFn: async () => {
-      const data = await fetchGraphQL(PRODUCTS_QUERY);
-      return data.products;
+  const { data, loading, error } = useQuery(PRODUCTS_QUERY, {
+    variables: {
+      search,
+      categories,
+      sizes,
     },
   });
+
+  return {
+    products: data?.products,
+    isLoading: loading,
+    error,
+  };
 }
