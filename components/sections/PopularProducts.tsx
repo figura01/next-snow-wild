@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@apollo/client/react";
-import { PRODUCTS_QUERY } from "@/graphql/queries/products";
+import { GET_PRODUCTS } from "@/graphql/queries/products";
 
 interface IProduct {
   id: string;
@@ -22,7 +22,7 @@ interface ProductsData {
 }
 
 export default function PopularProducts() {
-  const { data, loading } = useQuery<ProductsData>(PRODUCTS_QUERY);
+  const { data, loading } = useQuery<ProductsData>(GET_PRODUCTS);
 
   if (loading) return <p>Loading...</p>;
 

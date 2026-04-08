@@ -1,20 +1,16 @@
 import { useQuery } from "@apollo/client/react";
-import { PRODUCTS_QUERY } from "@/graphql/queries/products";
-import { useCatalogStore } from "@/store/CatalogStore";
+import { GET_PRODUCTS } from "@/graphql/queries/products";
+import { GetProductsResponse } from "@/types/product";
 
-export function useProducts() {
-  const { search, categories, sizes } = useCatalogStore();
-
-  const { data, loading, error } = useQuery(PRODUCTS_QUERY, {
+export function useProducts(category?: string) {
+  const { data, loading, error } = useQuery<GetProductsResponse>(GET_PRODUCTS, {
     variables: {
-      search,
-      categories,
-      sizes,
+      categories: category ? [category] : undefined,
     },
   });
 
   return {
-    products: data?.products,
+    data: data?.products,
     isLoading: loading,
     error,
   };

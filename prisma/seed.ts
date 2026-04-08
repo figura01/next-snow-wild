@@ -1,100 +1,132 @@
 import { PrismaClient, Category, SizeType } from "@prisma/client";
 const prisma = new PrismaClient();
-async function createVariants(
-  productId: string,
-  sizes: string[],
-  stockPerSize = 3,
-) {
-  for (const size of sizes) {
-    const variant = await prisma.productVariant.create({
-      data: { productId, size },
-    });
-    for (let i = 0; i < stockPerSize; i++) {
-      await prisma.stockItem.create({ data: { variantId: variant.id } });
-    }
-  }
-}
 
 async function main() {
-  console.log("🌱 Seeding database...");
-  await prisma.reservationItem.deleteMany();
-  await prisma.order.deleteMany();
-  await prisma.stockItem.deleteMany();
-  await prisma.productVariant.deleteMany();
   await prisma.product.deleteMany();
 
-  /* SKIS */
-  const ski = await prisma.product.create({
+  // SKIS
+  await prisma.product.create({
     data: {
-      name: "Rossignol Hero",
-      description: "Ski de piste performant",
+      name: "Rossignol Experience 82",
+      description: "Ski polyvalent piste/all-mountain",
       category: Category.SKI,
-      image: "/products/rossignol-hero.jpg",
-      pricePerDay: 20,
+      image: "/images/ski1.jpg",
+      pricePerDay: 25,
       sizeType: SizeType.CM,
+      variants: {
+        create: [
+          {
+            size: "160",
+            stockItems: { create: Array.from({ length: 5 }).map(() => ({})) },
+          },
+          {
+            size: "170",
+            stockItems: { create: Array.from({ length: 4 }).map(() => ({})) },
+          },
+        ],
+      },
     },
   });
-  await createVariants(ski.id, ["160", "170", "180"], 4);
 
-  /* SNOWBOARD */
-  const snowboard = await prisma.product.create({
+  // SNOWBOARD
+  await prisma.product.create({
     data: {
       name: "Burton Custom",
-      description: "Snowboard polyvalent",
+      description: "Snowboard freestyle polyvalent",
       category: Category.SNOWBOARD,
-      image: "/products/burton-custom.jpg",
-      pricePerDay: 22,
+      image: "/images/snow1.jpg",
+      pricePerDay: 30,
       sizeType: SizeType.CM,
+      variants: {
+        create: [
+          {
+            size: "150",
+            stockItems: { create: Array.from({ length: 3 }).map(() => ({})) },
+          },
+          {
+            size: "155",
+            stockItems: { create: Array.from({ length: 2 }).map(() => ({})) },
+          },
+        ],
+      },
     },
   });
-  await createVariants(snowboard.id, ["150", "155", "160"], 3);
 
-  /* CHAUSSURES */
-  const boots = await prisma.product.create({
+  // CHAUSSURES
+  await prisma.product.create({
     data: {
-      name: "Salomon S-Pro",
-      description: "Chaussures de ski confortables",
+      name: "Salomon X Pro",
+      description: "Chaussures de ski confort",
       category: Category.SHOES,
-      image: "/products/salomon-boots.jpg",
-      pricePerDay: 12,
+      image: "/images/shoes1.jpg",
+      pricePerDay: 15,
       sizeType: SizeType.EU,
+      variants: {
+        create: [
+          {
+            size: "42",
+            stockItems: { create: Array.from({ length: 6 }).map(() => ({})) },
+          },
+          {
+            size: "44",
+            stockItems: { create: Array.from({ length: 5 }).map(() => ({})) },
+          },
+        ],
+      },
     },
   });
-  await createVariants(boots.id, ["40", "41", "42", "43", "44"], 2);
 
-  /* BATONS */
-  const poles = await prisma.product.create({
+  // CASQUES
+  await prisma.product.create({
     data: {
-      name: "Black Diamond Trail",
-      description: "Bâtons solides",
-      category: Category.POLES,
-      image: "/products/poles.jpg",
-      pricePerDay: 5,
-      sizeType: SizeType.CM,
-    },
-  });
-  await createVariants(poles.id, ["110", "120", "130"], 3);
-
-  /* CASQUES */
-  const helmet = await prisma.product.create({
-    data: {
-      name: "Salomon Pioneer",
+      name: "Casque Smith",
       description: "Casque léger et sécurisé",
       category: Category.HELMET,
-      image: "/products/helmet.jpg",
-      pricePerDay: 8,
+      image: "/images/helmet1.jpg",
+      pricePerDay: 10,
       sizeType: SizeType.LETTER,
+      variants: {
+        create: [
+          {
+            size: "S",
+            stockItems: { create: Array.from({ length: 4 }).map(() => ({})) },
+          },
+          {
+            size: "M",
+            stockItems: { create: Array.from({ length: 6 }).map(() => ({})) },
+          },
+        ],
+      },
     },
   });
-  await createVariants(helmet.id, ["S", "M", "L"], 3);
-  console.log("✅ Seed completed");
+
+  // BÂTONS
+  await prisma.product.create({
+    data: {
+      name: "Bâtons Rossignol",
+      description: "Bâtons légers aluminium",
+      category: Category.POLES,
+      image: "/images/poles1.jpg",
+      pricePerDay: 8,
+      sizeType: SizeType.CM,
+      variants: {
+        create: [
+          {
+            size: "110",
+            stockItems: { create: Array.from({ length: 5 }).map(() => ({})) },
+          },
+          {
+            size: "120",
+            stockItems: { create: Array.from({ length: 5 }).map(() => ({})) },
+          },
+        ],
+      },
+    },
+  });
+
+  console.log("🌱 Seed terminé");
 }
 
 main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+  .catch(console.error)
+  .finally(() => prisma.$disconnect());

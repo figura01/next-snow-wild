@@ -1,6 +1,7 @@
 export const typeDefs = `#graphql
 
   enum Category {
+    ALL
     SKI
     SNOWBOARD
     SHOES
@@ -8,9 +9,20 @@ export const typeDefs = `#graphql
     HELMET
   }
 
+  enum SizeType {
+    CM
+    EU
+    LETTER
+  }
+
+  type StockItem {
+    id: ID!
+  }
+
   type ProductVariant {
     id: ID!
     size: String!
+    stockItems: [StockItem!]!
   }
 
   type Product {
@@ -20,6 +32,7 @@ export const typeDefs = `#graphql
     category: Category!
     image: String!
     pricePerDay: Float!
+    sizeType: SizeType!
     variants: [ProductVariant!]!
   }
 

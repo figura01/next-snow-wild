@@ -17,9 +17,9 @@ export function ThemeToggle() {
 
   return (
     <button
-      onClick={() =>
-        setTheme(isDark ? "light" : "dark") && console.log("click")
-      }
+      onClick={() => {
+        setTheme(isDark ? "light" : "dark");
+      }}
       className={`
         relative w-14 h-8 rounded-full transition
         ${isDark ? "bg-[color:var(--color-ski-600)]" : "bg-slate-300"}

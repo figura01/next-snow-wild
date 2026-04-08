@@ -1,0 +1,18 @@
+input CreateVariantInput {
+  size: String!
+  quantity: Int!
+}
+
+input CreateProductInput {
+  name: String!
+  description: String!
+  category: Category!
+  image: String!
+  pricePerDay: Float!
+  sizeType: SizeType!
+  variants: [CreateVariantInput!]!
+}
+
+type Mutation {
+  createProduct(data: CreateProductInput!): Product!
+}

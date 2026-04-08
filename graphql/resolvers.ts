@@ -1,14 +1,11 @@
 import { prisma } from "@/lib/prisma";
+import { Category } from "@prisma/client";
 
 export const resolvers = {
   Query: {
     products: async (
       _: unknown,
-      args: {
-        search?: string;
-        categories?: string[];
-        sizes?: string[];
-      },
+      args: { search?: string; categories?: string[]; sizes?: string[] },
     ) => {
       return prisma.product.findMany({
         where: {
@@ -16,13 +13,19 @@ export const resolvers = {
             name: { contains: args.search, mode: "insensitive" },
           }),
           ...(args.categories?.length && {
-            category: { in: args.categories },
+            category: { in: args.categories as Category[] },
           }),
           ...(args.sizes?.length && {
             variants: { some: { size: { in: args.sizes } } },
           }),
         },
-        include: { variants: true },
+        include: {
+          variants: {
+            include: {
+              stockItems: true,
+            },
+          },
+        },
       });
     },
   },
